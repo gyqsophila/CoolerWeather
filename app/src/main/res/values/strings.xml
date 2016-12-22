@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">CoolerWeather</string>
     <string name="api_province">http://guolin.tech/api/china/</string>
+    <string name="api_weather">http://guolin.tech/api/weather/?cityid=%s&amp;key=1d9aa69453ed4f768bb8a742a5124cd7</string>
+    <string name="api_bing_pic">http://guolin.tech/api/bing_pic</string>
     <string name="level_province">province</string>
     <string name="level_city">city</string>
     <string name="level_county">county</string>
@@ -10,4 +12,15 @@
     <string name="cn_name">中国</string>
     <string name="progress_tip">正在加载中。。。</string>
     <string name="load_error">加载失败</string>
+
+    <!--WeatherActivity-->
+    <string name="weather_forcast">预报</string>
+    <string name="weather_air_kg">空气质量</string>
+    <string name="weather_aqi_info">AQI 指数</string>
+    <string name="weather_pm_info">PM2.5 指数</string>
+    <string name="weather_life_tip">生活建议</string>
+    <string name="weather_load_error">获取天气信息失败</string>
+    <string name="weather_comf_kg">舒适度：%s</string>
+    <string name="weather_car_kg">洗车指数：%s</string>
+    <string name="weather_sport_kg">运动建议：%s</string>
 </resources>

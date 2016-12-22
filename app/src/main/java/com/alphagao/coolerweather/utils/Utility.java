@@ -1,10 +1,13 @@
 package com.alphagao.coolerweather.utils;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.alphagao.coolerweather.db.City;
 import com.alphagao.coolerweather.db.County;
 import com.alphagao.coolerweather.db.Province;
+import com.alphagao.coolerweather.gson.Weather;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +18,8 @@ import org.json.JSONObject;
  */
 
 public class Utility {
+    private static final String TAG = "Utility";
+
     public static boolean handleProvinceResponse(String response) {
         if (!(TextUtils.isEmpty(response))) {
             try {
@@ -71,5 +76,18 @@ public class Utility {
             }
         }
         return false;
+    }
+
+    public static Weather handleWeatherResponse(String response) {
+        try {
+            Log.d(TAG, "handleWeatherResponse: "+response);
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
