@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">CoolerWeather</string>
+    <string name="api_province">http://guolin.tech/api/china/</string>
+    <string name="level_province">province</string>
+    <string name="level_city">city</string>
+    <string name="level_county">county</string>
+
+
+    <!--ChooseAreaFragment-->
+    <string name="cn_name">中国</string>
+    <string name="progress_tip">正在加载中。。。</string>
+    <string name="load_error">加载失败</string>
 </resources>
