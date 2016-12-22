@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,8 @@ public class ChooseAreaFragment extends Fragment {
     Button backButton;
     @BindView(R.id.list_view)
     ListView listView;
+    @BindView(R.id.fragment_title_layout)
+    RelativeLayout fragmentTitleLayout;
 
     private ArrayAdapter<String> adapter;
     private List<String> dataList = new ArrayList<>();
@@ -75,6 +78,11 @@ public class ChooseAreaFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (getActivity() instanceof WeatherActivity) {
+            ViewGroup.LayoutParams params = fragmentTitleLayout.getLayoutParams();
+            params.height+=100;
+            fragmentTitleLayout.setLayoutParams(params);
+        }
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view,

@@ -1,5 +1,6 @@
 package com.alphagao.coolerweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.alphagao.coolerweather.gson.Forecast;
 import com.alphagao.coolerweather.gson.Weather;
+import com.alphagao.coolerweather.services.AutoUpdateService;
 import com.alphagao.coolerweather.utils.HttpUtil;
 import com.alphagao.coolerweather.utils.Utility;
 import com.bumptech.glide.Glide;
@@ -77,16 +79,20 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         ButterKnife.bind(this);
+        setBackgroundFit();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        initBackImg(prefs);
+        initWeatherInfo(prefs);
+        initRefresh();
+    }
+
+    private void setBackgroundFit() {
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView = getWindow().getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        initBackImg(prefs);
-        initWeatherInfo(prefs);
-        initRefresh();
     }
 
     private void initWeatherInfo(SharedPreferences prefs) {
@@ -147,6 +153,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     public void requestWeather(String weather_id) {
+        weatherId = weather_id;
         String weatherUrl = getString(R.string.api_weather, weather_id);
         //Log.d(TAG, "requestWeather: "+weatherUrl);
         HttpUtil.sendOKHttpRequest(weatherUrl, new Callback() {
@@ -218,6 +225,12 @@ public class WeatherActivity extends AppCompatActivity {
         carWashTxt.setText(carWash);
         sportTxt.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
+        startAutoUpdate();
+    }
+
+    private void startAutoUpdate() {
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     @OnClick(R.id.nav_button)
