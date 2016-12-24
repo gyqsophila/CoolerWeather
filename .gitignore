@@ -40,4 +40,4 @@ captures/
 *.jks
 
 # ¹Ø¼üÅäÖÃÎÄ¼ş
-*.properties
+gradle.properties
