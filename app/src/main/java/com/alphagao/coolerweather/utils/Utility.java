@@ -1,7 +1,6 @@
 package com.alphagao.coolerweather.utils;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.alphagao.coolerweather.db.City;
 import com.alphagao.coolerweather.db.County;
@@ -80,7 +79,7 @@ public class Utility {
 
     public static Weather handleWeatherResponse(String response) {
         try {
-            Log.d(TAG, "handleWeatherResponse: "+response);
+            //Log.d(TAG, "handleWeatherResponse: "+response);
             JSONObject jsonObject = new JSONObject(response);
             JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
             String weatherContent = jsonArray.getJSONObject(0).toString();
