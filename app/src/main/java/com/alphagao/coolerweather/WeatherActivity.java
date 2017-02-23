@@ -1,16 +1,25 @@
 package com.alphagao.coolerweather;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -73,8 +82,8 @@ public class WeatherActivity extends AppCompatActivity {
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     private String weatherId;
+    private AutoUpdateService.MyBinder binder;
 
-    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
@@ -103,6 +112,7 @@ public class WeatherActivity extends AppCompatActivity {
             showWeatherInfo(weather);
         } else {
             weatherId = getIntent().getStringExtra("weather_id");
+            Log.d(TAG, "initWeatherInfo: " + weatherId);
             weatherLayout.setVisibility(View.GONE);
             requestWeather(weatherId);
         }
@@ -133,6 +143,11 @@ public class WeatherActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 加载每日背景图
+     *
+     * @param prefs
+     */
     private void initBackImg(SharedPreferences prefs) {
         String bingPic = prefs.getString("bing_pic", null);
         if (bingPic != null) {
@@ -142,6 +157,9 @@ public class WeatherActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 初始化下拉刷新的配置
+     */
     private void initRefresh() {
         swipeRefeash.setColorSchemeResources(R.color.colorAccent);
         swipeRefeash.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -152,6 +170,10 @@ public class WeatherActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 请求新的天气数据
+     * @param weather_id 该地区天气 ID
+     */
     public void requestWeather(String weather_id) {
         weatherId = weather_id;
         String weatherUrl = getString(R.string.api_weather, weather_id);
@@ -189,6 +211,10 @@ public class WeatherActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 显示嫌弃数据
+     * @param weather 天气对象
+     */
     private void showWeatherInfo(Weather weather) {
         String cityName = weather.basic.cityName;
         String updateTime = weather.basic.update.updateTime.split(" ")[1];
@@ -231,10 +257,61 @@ public class WeatherActivity extends AppCompatActivity {
     private void startAutoUpdate() {
         Intent intent = new Intent(this, AutoUpdateService.class);
         startService(intent);
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        AutoUpdateService.handler = handler;
     }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (binder != null) {
+                Log.d(TAG, "handleMessage: " + binder.getWeatherIdAndCityName()[0]);
+                Log.d(TAG, "handleMessage: weatherId:"+weatherId);
+                //当位置发生变化的时候
+                if (!binder.getWeatherIdAndCityName()[0].equals(weatherId) ) {
+                    alertToChangeLocation();
+                }
+            }
+        }
+    };
+
+    //弹窗提示用户是否切换到定位城市
+    private void alertToChangeLocation() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.weather_loc_title))
+                .setMessage(getString(R.string.weather_loc_content, binder.getWeatherIdAndCityName()[1]))
+                .setCancelable(true)
+                .setPositiveButton(getString(R.string.weather_loc_change), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestWeather(binder.getWeatherIdAndCityName()[0]);
+                    }
+                })
+                .setNegativeButton(getString(R.string.weather_loc_not_change), null)
+                .show();
+    }
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            binder = (AutoUpdateService.MyBinder) service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     @OnClick(R.id.nav_button)
     public void onClick() {
-        drawerLayout.openDrawer(Gravity.START);
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(connection);
     }
 }

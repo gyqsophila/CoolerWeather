@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.alphagao.coolerweather.db.City;
 import com.alphagao.coolerweather.db.County;
 import com.alphagao.coolerweather.db.Province;
+import com.alphagao.coolerweather.gson.SearchBasic;
 import com.alphagao.coolerweather.gson.Weather;
 import com.google.gson.Gson;
 
@@ -77,6 +78,11 @@ public class Utility {
         return false;
     }
 
+    /**
+     * 解析天气信息生成 Weather 对象
+     * @param response 流
+     * @return Weather 对象
+     */
     public static Weather handleWeatherResponse(String response) {
         try {
             //Log.d(TAG, "handleWeatherResponse: "+response);
@@ -84,6 +90,24 @@ public class Utility {
             JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
             String weatherContent = jsonArray.getJSONObject(0).toString();
             return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 解析查询信息生成 SearchBasic 对象
+     * @param response 流
+     * @return SearchBasic 对象
+     */
+    public static SearchBasic handleSearchResponse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather5");
+            String searchContent = jsonArray.getJSONObject(0).toString();
+            //Log.d(TAG, "handleSearchResponse: "+searchContent);
+            return new Gson().fromJson(searchContent, SearchBasic.class);
         } catch (JSONException e) {
             e.printStackTrace();
         }

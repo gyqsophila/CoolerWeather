@@ -3,6 +3,7 @@
     <string name="api_province">http://guolin.tech/api/china/</string>
     <string name="api_weather">http://guolin.tech/api/weather/?cityid=%s&amp;key=1d9aa69453ed4f768bb8a742a5124cd7</string>
     <string name="api_bing_pic">http://guolin.tech/api/bing_pic</string>
+    <string name="api_city_search">https://free-api.heweather.com/v5/search?city=%s&amp;key=1d9aa69453ed4f768bb8a742a5124cd7</string>
     <string name="level_province">province</string>
     <string name="level_city">city</string>
     <string name="level_county">county</string>
@@ -23,4 +24,8 @@
     <string name="weather_comf_kg">舒适度：%s</string>
     <string name="weather_car_kg">洗车指数：%s</string>
     <string name="weather_sport_kg">运动建议：%s</string>
+    <string name="weather_loc_title">位置发生变化</string>
+    <string name="weather_loc_content">检测到您现在位于 %s , 是否切换到该地区？</string>
+    <string name="weather_loc_change">立刻切换</string>
+    <string name="weather_loc_not_change">暂不切换</string>
 </resources>
