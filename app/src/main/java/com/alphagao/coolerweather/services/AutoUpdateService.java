@@ -146,7 +146,7 @@ public class AutoUpdateService extends Service {
                         longitude = bdLocation.getLongitude();
                         //根据地址查询该地区天气 ID
                         queryCountryIdFromName(districtName);
-                        Toast.makeText(AutoUpdateService.this, "定位地址是：" + districtName, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(AutoUpdateService.this, "定位地址是：" + districtName, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -195,10 +195,10 @@ public class AutoUpdateService extends Service {
         Double seatchLongiitude = Double.valueOf(searchBasic.basic.longitude);
         Double locationLatitude = Double.valueOf(latitude);
         Double locationLongitude = Double.valueOf(longitude);
-        Log.d(TAG, "validateLocInfo: searchLatitude:" + searchLatitude);
+        /*Log.d(TAG, "validateLocInfo: searchLatitude:" + searchLatitude);
         Log.d(TAG, "validateLocInfo: seatchLongiitude:" + seatchLongiitude);
         Log.d(TAG, "validateLocInfo: locationLatitude:" + locationLatitude);
-        Log.d(TAG, "validateLocInfo: locationLongitude:" + locationLongitude);
+        Log.d(TAG, "validateLocInfo: locationLongitude:" + locationLongitude);*/
         //检测误差在一定范围之内，定位成功
         if (Math.abs(searchLatitude - locationLatitude) <= 0.5 &&
                 Math.abs(seatchLongiitude - locationLongitude) <= 0.5) {
